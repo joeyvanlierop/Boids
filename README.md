@@ -1,5 +1,5 @@
 <h1 align=center>jTorrent</h1>
-<p align=center>A BitTorrent client written in Java</p>
+<p align=center><i>A BitTorrent client written in Java</i></p>
 
 ## About The Project
 
