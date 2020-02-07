@@ -1,5 +1,5 @@
 <h1 align=center>Boids</h1>
-<p align=center><i>A flocking sumulator written in Java</i></p>
+<p align=center><i>A flocking simulator written in Java</i></p>
 
 ## About The Project
 
