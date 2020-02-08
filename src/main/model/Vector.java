@@ -57,8 +57,7 @@ public class Vector {
     }
 
     public void norm() {
-        setX(getX() / Vector.magnitude(this));
-        setY(getY() / Vector.magnitude(this));
+        mult(1 / Vector.magnitude(this));
     }
 
     public double getX() {
@@ -75,6 +74,24 @@ public class Vector {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null) {
+            return false;
+        }
+
+        if (o.getClass() != getClass()) {
+            return false;
+        }
+
+        final Vector v = (Vector) o;
+        return v.getX() == getX() && v.getY() == getY();
     }
 
     @Override
