@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class VectorTest {
     Vector zeroVector;
@@ -20,11 +21,27 @@ class VectorTest {
     }
 
     @Test
+    void testEquals() {
+        assertNotEquals(oneVector, null);
+        assertNotEquals(oneVector, "oneVector");
+        assertNotEquals(zeroVector, oneVector);
+        assertEquals(iVector, iVector);
+        assertEquals(new Vector(1, 1), oneVector);
+    }
+
+    @Test
+    void testToString() {
+        assertEquals("Vector[X=0.00, Y=0.00]", zeroVector.toString());
+        assertEquals("Vector[X=1.00, Y=0.00]", iVector.toString());
+        assertEquals("Vector[X=0.00, Y=1.00]", jVector.toString());
+        assertEquals("Vector[X=1.00, Y=1.00]", oneVector.toString());
+    }
+
+    @Test
     void testDistance() {
-        assertEquals(0, Vector.magnitude(zeroVector));
-        assertEquals(Math.sqrt(2), Vector.magnitude(oneVector));
-        assertEquals(1, Vector.magnitude(iVector));
-        assertEquals(1, Vector.magnitude(jVector));
+        assertEquals(0, Vector.distance(zeroVector, zeroVector));
+        assertEquals(Math.sqrt(2), Vector.distance(iVector, jVector));
+        assertEquals(Math.sqrt(2), Vector.distance(zeroVector, oneVector));
     }
 
     @Test
@@ -45,6 +62,7 @@ class VectorTest {
     void testMagnitude() {
         assertEquals(0, Vector.magnitude(zeroVector));
         assertEquals(1, Vector.magnitude(iVector));
+        assertEquals(1, Vector.magnitude(jVector));
         assertEquals(Math.sqrt(2), Vector.magnitude(oneVector));
     }
 

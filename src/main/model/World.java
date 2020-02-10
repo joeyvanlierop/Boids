@@ -25,7 +25,11 @@ public class World {
         }
     }
 
-    public void addRandomBoid() {
+    public void addBoid(Boid boid) {
+        boidList.add(boid);
+    }
+
+    public Boid addRandomBoid() {
         Random random = new Random();
         double positionX = random.nextDouble() * width;
         double positionY = random.nextDouble() * height;
@@ -37,6 +41,7 @@ public class World {
         Boid boid = new Boid(position, velocity);
 
         boidList.add(boid);
+        return boid;
     }
 
     public void addRandomBoids(int count) {
@@ -45,7 +50,19 @@ public class World {
         }
     }
 
+    public int boidCount() {
+        return boidList.size();
+    }
+
     public ArrayList<Boid> getBoidList() {
         return boidList;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

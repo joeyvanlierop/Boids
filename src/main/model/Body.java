@@ -21,10 +21,12 @@ public class Body {
     public Body(Vector position, Vector velocity, Vector acceleration, double mass) {
         this.position = position;
         this.velocity = velocity;
+        this.acceleration = acceleration;
         this.mass = mass;
     }
 
     public void move() {
+        velocity.add(acceleration);
         position.add(velocity);
     }
 
