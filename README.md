@@ -13,12 +13,9 @@ Developed by Craig Reynolds in 1986, boids are a form of artificial life that mi
 ## User Stories
 
 - As a user, I want to be able to create a world
-- As a user, I want to be able to wrap the bounds of a world
-- As a user, I want to be able to randomly populate a world with boids
-- As a user, I want to be able to randomly add a boid to a world
-- As a user, I want to be able to manually add a boid to a world
-- As a user, I want to be able to manually remove a boid from a world
-- As a user, I want to be able to see the number of boids in a world
+- As a user, I want to be able to add a boid to a world
+- As a user, I want to be able to move all boids in a world
+- As a user, I want to be able to view the list of all boids in a world
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

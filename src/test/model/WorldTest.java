@@ -3,8 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class WorldTest {
     World world;
@@ -46,13 +45,19 @@ class WorldTest {
 
     @Test
     void testAddBoid() {
-        Boid boid1 = new Boid(new Vector(0, 0));
-        Boid boid2 = new Boid(new Vector(1, 1));
-        world.addBoid(boid1);
-        world.addBoid(boid2);
+        Boid boid1 = world.addBoid(new Boid(new Vector(0, 0)));
+        Boid boid2 = world.addBoid(new Boid(new Vector(1, 1)));
+        Boid boid3 = world.addBoid(new Boid(new Vector(-1, 1)));
+        Boid boid4 = world.addBoid(new Boid(new Vector(1, -1)));
+        Boid boid5 = world.addBoid(new Boid(new Vector(11, 1)));
+        Boid boid6 = world.addBoid(new Boid(new Vector(1, 11)));
 
         assertTrue(world.getBoidList().contains(boid1));
         assertTrue(world.getBoidList().contains(boid2));
+        assertNull(boid3);
+        assertNull(boid4);
+        assertNull(boid5);
+        assertNull(boid6);
     }
 
     @Test
