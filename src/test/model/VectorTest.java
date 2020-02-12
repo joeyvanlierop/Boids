@@ -25,8 +25,8 @@ class VectorTest {
         assertNotEquals(oneVector, null);
         assertNotEquals(oneVector, "oneVector");
         assertNotEquals(zeroVector, oneVector);
-        assertNotEquals(iVector, jVector);
-        assertNotEquals(jVector, iVector);
+        assertNotEquals(iVector, oneVector);
+        assertNotEquals(jVector, oneVector);
         assertEquals(iVector, iVector);
         assertEquals(new Vector(1, 1), oneVector);
     }
