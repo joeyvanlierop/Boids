@@ -12,10 +12,10 @@ Developed by Craig Reynolds in 1986, boids are a form of artificial life that mi
 
 ## User Stories
 
-- As a user, I want to be able to create a world
-- As a user, I want to be able to add a boid to a world
-- As a user, I want to be able to move all boids in a world
-- As a user, I want to be able to view the list of all boids in a world
+- [x] As a user, I want to be able to create a world
+- [x] As a user, I want to be able to add a boid to a world
+- [x] As a user, I want to be able to move all boids in a world
+- [x] As a user, I want to be able to view the list of all boids in a world
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
