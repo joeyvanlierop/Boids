@@ -3,11 +3,15 @@ package ui;
 import model.Boid;
 import model.Vector;
 import model.World;
+import persistence.WorldReader;
+import persistence.WorldWriter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class WorldApp {
+    private static final String WORLD_FILE = "./data/autosave.world";
     private World world;
     private Scanner input;
 
@@ -23,7 +27,7 @@ public class WorldApp {
         String command;
         input = new Scanner(System.in);
 
-        init();
+        loadWorld();
 
         while (running) {
             displayMenu();
@@ -31,6 +35,7 @@ public class WorldApp {
             command = command.toLowerCase();
 
             if (command.equals("q")) {
+                saveWorld();
                 running = false;
             } else {
                 processCommand(command);
@@ -38,9 +43,38 @@ public class WorldApp {
         }
     }
 
+
+    // MODIFIES: this
+    // EFFECTS: Loads world from WORLD_FILE, if that file exists
+    //          otherwise initializes world with default values
+    private void loadWorld() {
+        try {
+            World loadedWorld = WorldReader.read(WORLD_FILE);
+
+            System.out.print("Would you like to load the autosaved world (y/n): ");
+            String answer = input.next();
+            if (answer.equals("y")) {
+                world = loadedWorld;
+            } else {
+                newWorld();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            newWorld();
+        }
+    }
+
+    // EFFECTS: Saves world state to WORLD_FILE
+    private void saveWorld() {
+        try {
+            WorldWriter.write(world, WORLD_FILE);
+        } catch (IOException e) {
+            System.out.println("Unable to save world to " + WORLD_FILE);
+        }
+    }
+
     // MODIFIES: this
     // EFFECTS: initializes world
-    private void init() {
+    private void newWorld() {
         System.out.print("Enter the width of the world: ");
         int width = input.nextInt();
 

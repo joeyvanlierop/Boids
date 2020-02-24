@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -7,16 +8,16 @@ import java.util.Random;
 //  - A width
 //  - A height
 //  - A list of boids
-public class World {
+public class World implements Serializable {
     private int width;
     private int height;
     private ArrayList<Boid> boidList;
 
     /**
      * REQUIRES: width is greater than zero
-     * height is greater than zero
+     *           height is greater than zero
      * EFFECTS: constructs a world with: the given width and height
-     * no boids are automatically generated
+     *          no boids are automatically generated
      */
     public World(int width, int height) {
         this(width, height, 0);
@@ -24,9 +25,9 @@ public class World {
 
     /**
      * REQUIRES: width is greater than zero
-     * height is greater than zero
+     *           height is greater than zero
      * EFFECTS: constructs a world with: the given width and height and
-     * generates the given amount of boids randomly placed within the bounds
+     *          generates the given amount of boids randomly placed within the bounds
      */
     public World(int width, int height, int boidCount) {
         this.width = width;

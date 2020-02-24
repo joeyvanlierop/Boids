@@ -8,7 +8,7 @@ Developed by Craig Reynolds in 1986, boids are a form of artificial life that mi
 - Alignment: Steer towards the average heading of local flockmates
 - Cohesion: Steer to move towards the average position (center of mass) of local flockmates
 
-[Futher reading](https://en.wikipedia.org/wiki/Boids)
+[Further reading](https://en.wikipedia.org/wiki/Boids)
 
 ## User Stories
 
@@ -16,6 +16,8 @@ Developed by Craig Reynolds in 1986, boids are a form of artificial life that mi
 - [x] As a user, I want to be able to add a boid to a world
 - [x] As a user, I want to be able to move all boids in a world
 - [x] As a user, I want to be able to view the list of all boids in a world
+- [x] As a user, I want to be able to automatically save a world when the program quits
+- [x] As a user, I want to be able to optionally load my world file when the program starts
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

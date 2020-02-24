@@ -3,6 +3,7 @@ package model;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class BoidTest {
     @Test
@@ -35,6 +36,21 @@ class BoidTest {
         assertEquals(new Vector(7, 7), boid4.getVelocity());
         assertEquals(new Vector(8, 8), boid4.getAcceleration());
         assertEquals(9, boid4.getMass());
+    }
+
+    @Test
+    void testEquals() {
+        Boid boid1 = new Boid(new Vector(0, 0));
+        Boid boid2 = new Boid(new Vector(0, 0), new Vector(1, 1));
+        Boid boid3 = new Boid(new Vector(0, 0), new Vector(1, 1), new Vector(2, 2));
+        Boid boid4 = new Boid(new Vector(0, 0), new Vector(1, 1), new Vector(2, 2), 3);
+        assertNotEquals(boid1, null);
+        assertNotEquals(boid1, "Boid");
+        assertNotEquals(boid1, boid2);
+        assertNotEquals(boid2, boid3);
+        assertNotEquals(boid3, boid4);
+        assertEquals(boid1, new Boid(new Vector(0, 0)));
+        assertEquals(boid4, new Boid(new Vector(0, 0), new Vector(1, 1), new Vector(2, 2), 3));
     }
 
     @Test

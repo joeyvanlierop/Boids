@@ -1,11 +1,13 @@
 package model;
 
+import java.io.Serializable;
+
 // Represents an boid having:
 //  - A position vector
 //  - A velocity vector
 //  - A acceleration vector
 //  - A mass
-public class Boid {
+public class Boid implements Serializable {
     private Vector position;
     private Vector velocity;
     private Vector acceleration;
@@ -93,5 +95,25 @@ public class Boid {
     public String toString() {
         return String.format("Boid[position=%s, velocity=%s, acceleration=%s, mass=%.2f]",
                 position, velocity, acceleration, mass);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (o == null) {
+            return false;
+        }
+
+        if (o.getClass() != getClass()) {
+            return false;
+        }
+        final Boid b = (Boid) o;
+        return b.getPosition().equals(getPosition())
+                && b.getVelocity().equals(getVelocity())
+                && b.getAcceleration().equals(getAcceleration())
+                && b.getMass() == getMass();
     }
 }

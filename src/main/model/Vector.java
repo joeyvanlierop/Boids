@@ -1,9 +1,11 @@
 package model;
 
+import java.io.Serializable;
+
 // Represents a two dimensional vector having:
 //  - A x component
 //  - A y component
-public class Vector {
+public class Vector implements Serializable {
     private double componentX;
     private double componentY;
 
