@@ -21,6 +21,7 @@ public class WorldReaderTest {
 
     @BeforeEach
     void runBefore() {
+        WorldReader worldReader = new WorldReader();
         boid1 = new Boid(new Vector(2, 3), new Vector(4, 5), new Vector(6, 7), 8);
         boid2 = new Boid(new Vector(9, 10), new Vector(11, 12), new Vector(13, 14), 15);
         world = new World(20, 30);
