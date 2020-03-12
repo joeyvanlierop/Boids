@@ -1,82 +1,92 @@
 package model;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class BoidTest {
+    Boid boid;
+
+    @BeforeEach
+    void runBefore() {
+        boid = new Boid.BoidBuilder()
+                .setPosition(new Vector(0, 0))
+                .setVelocity(new Vector(0, 0))
+                .setAcceleration(new Vector(0, 0))
+                .setMass(1)
+                .setMaxVelocity(1)
+                .build();
+    }
+
     @Test
     void testConstructor() {
-        Boid boid1 = new Boid(new Vector(0, 0));
-        Boid boid2 = new Boid(new Vector(1, 1), new Vector(2, 2));
-        Boid boid3 = new Boid(new Vector(3, 3), new Vector(4, 4), new Vector(5, 5));
-        Boid boid4 = new Boid(new Vector(6, 6), new Vector(7, 7), new Vector(8, 8), 9);
-
-        assertEquals(new Vector(0, 0), boid1.getPosition());
-        assertEquals(new Vector(0, 0), boid1.getVelocity());
-        assertEquals(new Vector(0, 0), boid1.getAcceleration());
-        assertEquals(1, boid1.getMass());
-        boid1.setMass(10);
-        assertEquals(10, boid1.getMass());
-        boid1.setPosition(new Vector(5, 5));
-        assertEquals(new Vector(5, 5), boid1.getPosition());
-
-        assertEquals(new Vector(1, 1), boid2.getPosition());
-        assertEquals(new Vector(2, 2), boid2.getVelocity());
-        assertEquals(new Vector(0, 0), boid2.getAcceleration());
-        assertEquals(1, boid2.getMass());
-
-        assertEquals(new Vector(3, 3), boid3.getPosition());
-        assertEquals(new Vector(4, 4), boid3.getVelocity());
-        assertEquals(new Vector(5, 5), boid3.getAcceleration());
-        assertEquals(1, boid3.getMass());
-
-        assertEquals(new Vector(6, 6), boid4.getPosition());
-        assertEquals(new Vector(7, 7), boid4.getVelocity());
-        assertEquals(new Vector(8, 8), boid4.getAcceleration());
-        assertEquals(9, boid4.getMass());
+        assertEquals(new Vector(0, 0), boid.getPosition());
+        assertEquals(new Vector(0, 0), boid.getVelocity());
+        assertEquals(new Vector(0, 0), boid.getAcceleration());
+        assertEquals(1, boid.getMass());
+        assertEquals(1, boid.getMaxVelocity());
     }
 
     @Test
     void testEquals() {
-        Boid boid1 = new Boid(new Vector(0, 0));
-        Boid boid2 = new Boid(new Vector(0, 0), new Vector(1, 1));
-        Boid boid3 = new Boid(new Vector(0, 0), new Vector(1, 1), new Vector(2, 2));
-        Boid boid4 = new Boid(new Vector(0, 0), new Vector(1, 1), new Vector(2, 2), 3);
-        assertNotEquals(boid1, null);
-        assertNotEquals(boid1, "Boid");
-        assertNotEquals(boid1, boid2);
-        assertNotEquals(boid2, boid3);
-        assertNotEquals(boid3, boid4);
-        assertEquals(boid1, new Boid(new Vector(0, 0)));
-        assertEquals(boid4, new Boid(new Vector(0, 0), new Vector(1, 1), new Vector(2, 2), 3));
+        assertNotEquals(boid, null);
+        assertNotEquals(boid, "Boid");
+
+        Boid other = new Boid.BoidBuilder()
+                .setPosition(new Vector(1, 1))
+                .setVelocity(new Vector(1, 1))
+                .setAcceleration(new Vector(1, 1))
+                .setMass(2)
+                .setMaxVelocity(2)
+                .build();
+        assertNotEquals(boid, other);
+
+        other.setPosition(new Vector(0, 0));
+        assertNotEquals(boid, other);
+
+        other.setVelocity(new Vector(0, 0));
+        assertNotEquals(boid, other);
+
+        other.setAcceleration(new Vector(0, 0));
+        assertNotEquals(boid, other);
+
+        other.setMass(1);
+        assertNotEquals(boid, other);
+
+        other.setMaxVelocity(1);
+        assertEquals(boid, other);
     }
 
     @Test
     void testMove() {
-        Boid boid = new Boid(new Vector(0, 0));
+        boid.setMaxVelocity(10);
 
-        boid.move();
-        assertEquals(new Vector(0, 0), boid.getPosition());
-
-        boid.setVelocity(new Vector(1, 2));
-        boid.move();
-        assertEquals(new Vector(1, 2), boid.getPosition());
-
-        boid.setAcceleration(new Vector(1, 1));
-        boid.move();
-        assertEquals(new Vector(2, 3), boid.getVelocity());
-        assertEquals(new Vector(3, 5), boid.getPosition());
+        testMoveHelper(new Vector(0, 0), new Vector(0, 0), new Vector(0, 0));
+        testMoveHelper(new Vector(0, 0), new Vector(1, 0), new Vector(0, 0));
+        testMoveHelper(new Vector(0, 0), new Vector(-1, -1), new Vector(1, 1));
     }
-    
+
+    void testMoveHelper(Vector position, Vector velocity, Vector acceleration) {
+        Vector endVelocity = velocity.add(acceleration);
+        Vector endPosition = position.add(endVelocity);
+
+        boid.setPosition(position);
+        boid.setVelocity(velocity);
+        boid.setAcceleration(acceleration);
+        boid.move();
+        assertEquals(endPosition, boid.getPosition());
+        assertEquals(endVelocity, boid.getVelocity());
+        assertEquals(new Vector(0, 0), boid.getAcceleration());
+    }
+
     @Test
     void testToString() {
         Vector position = new Vector(0, 0);
         Vector velocity = new Vector(0, 0);
         Vector acceleration = new Vector(0, 0);
         double mass = 1;
-        Boid boid = new Boid(position, velocity, acceleration, mass);
 
         String positionString = position.toString();
         String velocityString = velocity.toString();

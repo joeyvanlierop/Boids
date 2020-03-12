@@ -1,165 +1,81 @@
 package ui;
 
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Polygon;
+import javafx.stage.Stage;
 import model.Boid;
 import model.Vector;
 import model.World;
-import persistence.WorldReader;
-import persistence.WorldWriter;
+import model.behaviour.rules.Alignment;
+import model.behaviour.rules.Cohesion;
+import model.behaviour.rules.Noise;
+import model.behaviour.rules.Separation;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
-public class WorldApp {
-    private static final String WORLD_FILE = "./data/autosave.world";
+public class WorldApp extends Application {
     private World world;
-    private Scanner input;
+    private Double[] boidPoints;
 
-    // EFFECTS: runs the teller application
     public WorldApp() {
-        runWorld();
+        world = new World.WorldBuilder().setWidth(500)
+                .setHeight(500)
+                .addRule(new Separation(true, 0.015, 15))
+                .addRule(new Alignment(true, 0.01, 20))
+                .addRule(new Cohesion(true, 0.01, 20))
+                .addRule(new Noise(true, 0.05))
+                .build();
+        boidPoints = new Double[]{2.0, 0.0, -3.0, -2.0, -3.0, 2.0};
     }
 
-    // MODIFIES: this
-    // EFFECTS: processes user input
-    private void runWorld() {
-        boolean running = true;
-        String command;
-        input = new Scanner(System.in);
+    @Override
+    public void start(Stage stage) {
+        Group root = new Group();
+        Scene scene = new Scene(root);
+        Pane canvas = new Pane();
 
-        loadWorld();
+        root.getChildren().add(canvas);
+        canvas.setPrefSize(500, 500);
 
-        while (running) {
-            displayMenu();
-            command = input.next();
-            command = command.toLowerCase();
-
-            if (command.equals("q")) {
-                saveWorld();
-                running = false;
-            } else {
-                processCommand(command);
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                update();
+                render(canvas);
             }
-        }
+        }.start();
+
+        stage.widthProperty().addListener((obs, oldVal, newVal) -> world.setWidth(newVal.intValue()));
+        stage.heightProperty().addListener((obs, oldVal, newVal) -> world.setHeight(newVal.intValue()));
+        stage.setTitle("Boids");
+        stage.setScene(scene);
+        stage.show();
+
+        world.addRandomBoids(600);
     }
 
-
-    // MODIFIES: this
-    // EFFECTS: Loads world from WORLD_FILE, if that file exists
-    //          otherwise initializes world with default values
-    private void loadWorld() {
-        try {
-            World loadedWorld = WorldReader.read(WORLD_FILE);
-
-            System.out.print("Would you like to load the autosaved world (y/n): ");
-            String answer = input.next();
-            if (answer.equals("y")) {
-                world = loadedWorld;
-            } else {
-                newWorld();
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            newWorld();
-        }
+    private void update() {
+        world.update();
     }
 
-    // EFFECTS: Saves world state to WORLD_FILE
-    private void saveWorld() {
-        try {
-            WorldWriter.write(world, WORLD_FILE);
-        } catch (IOException e) {
-            System.out.println("Unable to save world to " + WORLD_FILE);
-        }
-    }
+    private void render(Pane canvas) {
+        canvas.getChildren().clear();
+        ArrayList<Boid> boidList = world.getBoids();
 
-    // MODIFIES: this
-    // EFFECTS: initializes world
-    private void newWorld() {
-        System.out.print("Enter the width of the world: ");
-        int width = input.nextInt();
-
-        System.out.print("Enter the height of the world: ");
-        int height = input.nextInt();
-
-        System.out.print("Enter amount of boids to populate world with: ");
-        int amount = input.nextInt();
-
-        world = new World(width, height, amount);
-    }
-
-    // EFFECTS: displays menu of options to user
-    private void displayMenu() {
-        System.out.println("\nSelect from:");
-        System.out.println("\ta -> manually add a boid");
-        System.out.println("\tr -> randomly add a boid");
-        System.out.println("\tl -> list all boids");
-        System.out.println("\tu -> update all boids");
-        System.out.println("\tq -> quit");
-    }
-
-    // MODIFIES: this
-    // EFFECTS: processes user command
-    private void processCommand(String command) {
-        switch (command) {
-            case "a":
-                manuallyAddBoid();
-                break;
-            case "r":
-                randomlyAddBoid();
-                break;
-            case "l":
-                listAllBoids();
-                break;
-            case "u":
-                updateAllBoids();
-                break;
-            default:
-                System.out.println("Selection not valid...");
-                break;
-        }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: prompts a user for the position and velocity of a boid to add to the world
-    private void manuallyAddBoid() {
-        int positionX;
-        int positionY;
-        int velocityX;
-        int velocityY;
-
-        System.out.print("Enter x position of boid: ");
-        positionX = input.nextInt();
-
-        System.out.print("Enter y position of boid: ");
-        positionY = input.nextInt();
-
-        System.out.print("Enter x velocity of boid: ");
-        velocityX = input.nextInt();
-
-        System.out.print("Enter y velocity of boid: ");
-        velocityY = input.nextInt();
-
-        Boid boid = new Boid(new Vector(positionX, positionY), new Vector(velocityX, velocityY));
-        world.addBoid(boid);
-    }
-
-    // MODIFIES: this
-    // EFFECTS: randomly adds a boid to the world
-    private void randomlyAddBoid() {
-        world.addRandomBoid();
-    }
-
-    // EFFECTS: prints list of boids in the world to the screen
-    private void listAllBoids() {
-        ArrayList<Boid> boidList = world.getBoidList();
         for (Boid boid : boidList) {
-            System.out.println(boid);
-        }
-    }
+            Vector boidPosition = boid.getPosition();
+            Polygon c = new Polygon();
 
-    // MODIFIES: this
-    // EFFECTS: updates all boids in the world
-    private void updateAllBoids() {
-        world.tick();
+            c.getPoints().addAll(boidPoints);
+            c.setTranslateX(boidPosition.getX());
+            c.setTranslateY(boidPosition.getY());
+            c.setRotate(Math.toDegrees(boid.getVelocity().rot()));
+
+            canvas.getChildren().addAll(c);
+        }
     }
 }

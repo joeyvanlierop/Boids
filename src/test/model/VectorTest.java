@@ -47,12 +47,6 @@ class VectorTest {
     }
 
     @Test
-    void testAngle() {
-        assertEquals(0, Vector.angle(iVector, iVector));
-        assertEquals(Math.PI / 2, Vector.angle(iVector, jVector));
-    }
-
-    @Test
     void testDot() {
         assertEquals(0, Vector.dot(zeroVector, iVector));
         assertEquals(0, Vector.dot(iVector, jVector));
@@ -69,15 +63,27 @@ class VectorTest {
     }
 
     @Test
+    void testAngle() {
+        assertEquals(0, Vector.rot(iVector, iVector));
+        assertEquals(Math.PI / 2, Vector.rot(iVector, jVector));
+    }
+
+    @Test
+    void testRot() {
+        Vector testVector1 = new Vector(1, 0);
+        Vector testVector2 = new Vector(0, 1);
+
+        assertEquals(0, testVector1.rot());
+        assertEquals(Math.PI / 2, testVector2.rot());
+    }
+
+    @Test
     void testAdd() {
         Vector testVector = new Vector(0, 0);
 
-        testVector.add(zeroVector);
-        assertEquals(zeroVector, testVector);
-        testVector.add(iVector);
-        assertEquals(iVector, testVector);
-        testVector.add(jVector);
-        assertEquals(oneVector, testVector);
+        assertEquals(zeroVector, testVector.add(zeroVector));
+        assertEquals(iVector, testVector.add(iVector));
+        assertEquals(oneVector, testVector.add(jVector));
     }
 
     @Test
@@ -92,12 +98,9 @@ class VectorTest {
     void testSub() {
         Vector testVector = new Vector(1, 1);
 
-        testVector.sub(zeroVector);
-        assertEquals(oneVector, testVector);
-        testVector.sub(iVector);
-        assertEquals(jVector, testVector);
-        testVector.sub(jVector);
-        assertEquals(zeroVector, testVector);
+        assertEquals(oneVector, testVector.sub(zeroVector));
+        assertEquals(jVector, testVector.sub(iVector));
+        assertEquals(zeroVector, testVector.sub(jVector));
     }
 
     @Test
@@ -113,12 +116,9 @@ class VectorTest {
     void testMult() {
         Vector testVector = new Vector(1, 1);
 
-        testVector.mult(2);
-        assertEquals(new Vector(2, 2), testVector);
-        testVector.mult(1);
-        assertEquals(testVector, testVector);
-        testVector.mult(0);
-        assertEquals(new Vector(0, 0), testVector);
+        assertEquals(new Vector(2, 2), testVector.mult(2));
+        assertEquals(testVector, testVector.mult(1));
+        assertEquals(new Vector(0, 0), testVector.mult(0));
     }
 
     @Test
@@ -130,11 +130,24 @@ class VectorTest {
     }
 
     @Test
+    void testDiv() {
+        Vector testVector = new Vector(2, 2);
+
+        assertEquals(oneVector, testVector.div(2));
+        assertEquals(testVector, testVector.div(1));
+    }
+
+    @Test
+    void testDivStatic() {
+        assertEquals(jVector, Vector.div(new Vector(0, 2), 2));
+        assertEquals(new Vector(0, 2), Vector.div(new Vector(0, 2), 1));
+    }
+
+    @Test
     void testNorm() {
         Vector testVector = new Vector(1, 1);
 
-        testVector.norm();
-        assertEquals(1, Vector.magnitude(testVector), 0.01);
+        assertEquals(1, Vector.magnitude(testVector.norm()), 0.01);
         assertEquals(new Vector(1 / Math.sqrt(2), 1 / Math.sqrt(2)), testVector);
     }
 
@@ -143,5 +156,19 @@ class VectorTest {
         assertEquals(jVector, Vector.norm(jVector));
         assertEquals(iVector, Vector.norm(iVector));
         assertEquals(new Vector(1 / Math.sqrt(2), 1 / Math.sqrt(2)), Vector.norm(oneVector));
+    }
+
+    @Test
+    void testClampMax() {
+        assertEquals(jVector, jVector.clamp(1));
+        assertEquals(jVector, new Vector(0, 2).clamp(1));
+        assertEquals(iVector, new Vector(2, 0).clamp(1));
+    }
+
+    @Test
+    void testClampMaxMin() {
+        assertEquals(jVector, jVector.clamp(1, 0));
+        assertEquals(jVector, new Vector(0, 2).clamp(1, 0));
+        assertEquals(new Vector(2, 0), new Vector(1, 0).clamp(2, 2));
     }
 }

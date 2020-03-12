@@ -10,16 +10,22 @@ class WorldTest {
 
     @BeforeEach
     void runBefore() {
-        world = new World(10, 10);
+        world = new World.WorldBuilder().setWidth(10).setHeight(10).build();
     }
 
     @Test
     void testConstructor() {
-        World world1 = new World(5, 5);
-        World world2 = new World(5, 5, 5);
+        assertEquals(10, world.getWidth());
+        assertEquals(10, world.getHeight());
+        assertNotNull(world.getBehaviour());
+    }
 
-        assertEquals(0, world1.boidCount());
-        assertEquals(5, world2.boidCount());
+    @Test
+    void testChangeSize() {
+        world.setWidth(100);
+        assertEquals(100, world.getWidth());
+        world.setHeight(100);
+        assertEquals(100, world.getHeight());
     }
 
     @Test
@@ -27,47 +33,74 @@ class WorldTest {
         Boid boid = world.addRandomBoid();
 
         assertEquals(1, world.boidCount());
-        assertTrue(world.getBoidList().contains(boid));
+        assertTrue(world.getBoids().contains(boid));
         assertTrue(boidInBounds(world, boid));
     }
 
     @Test
-    void testTick() {
-        Boid boid1 = new Boid(new Vector(0, 0), new Vector(10, 10));
-        Boid boid2 = new Boid(new Vector(1, 1), new Vector(1, 2));
-        world.addBoid(boid1);
-        world.addBoid(boid2);
-        world.tick();
-
-        assertEquals(new Vector(10, 10), world.getBoidList().get(0).getPosition());
-        assertEquals(new Vector(2, 3), world.getBoidList().get(1).getPosition());
+    void testUpdate() {
+        Boid boid = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).setVelocity(new Vector(10, 10)).build());
+        boid.setMaxVelocity(100);
+        world.update();
+        assertEquals(new Vector(10, 10), world.getBoids().get(0).getPosition());
     }
 
     @Test
     void testAddBoid() {
-        Boid boid1 = world.addBoid(new Boid(new Vector(0, 0)));
-        Boid boid2 = world.addBoid(new Boid(new Vector(1, 1)));
-        Boid boid3 = world.addBoid(new Boid(new Vector(-1, 1)));
-        Boid boid4 = world.addBoid(new Boid(new Vector(1, -1)));
-        Boid boid5 = world.addBoid(new Boid(new Vector(11, 1)));
-        Boid boid6 = world.addBoid(new Boid(new Vector(1, 11)));
+        Boid boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).build());
+        Boid boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(1, 1)).build());
+        Boid boid3 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(-1, 1)).build());
+        Boid boid4 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(1, -1)).build());
+        Boid boid5 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(11, 1)).build());
+        Boid body6 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(1, 11)).build());
 
-        assertTrue(world.getBoidList().contains(boid1));
-        assertTrue(world.getBoidList().contains(boid2));
+        assertTrue(world.getBoids().contains(boid1));
+        assertTrue(world.getBoids().contains(boid2));
         assertNull(boid3);
         assertNull(boid4);
         assertNull(boid5);
-        assertNull(boid6);
+        assertNull(body6);
+    }
+
+    @Test
+    void testWrapBoid() {
+        Boid boid = world.addBoid(new Boid.BoidBuilder().build());
+
+        testWrapBoidHelper(new Vector(-1, 0), new Vector(10, 0));
+        testWrapBoidHelper(new Vector(11, 0), new Vector(0, 0));
+        testWrapBoidHelper(new Vector(0, -1), new Vector(0, 10));
+        testWrapBoidHelper(new Vector(0, 11), new Vector(0, 0));
+        testWrapBoidHelper(new Vector(11, 11), new Vector(0, 0));
+        testWrapBoidHelper(new Vector(-1, -1), new Vector(10, 10));
+    }
+
+    private void testWrapBoidHelper(Vector startPosition, Vector endPosition) {
+        Boid boid = world.addBoid(new Boid.BoidBuilder().build());
+
+        boid.setPosition(startPosition);
+        world.wrapBoid(boid);
+        assertEquals(endPosition, boid.getPosition());
+    }
+
+    @Test
+    void testGetNearbyBoids() {
+        Boid boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).build());
+        Boid boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(1, 1)).build());
+        Boid boid3 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(5, 0)).build());
+
+        assertEquals(2, world.getNearbyBoids(boid1, 5).size());
+        assertEquals(1, world.getNearbyBoids(boid2, 3).size());
+        assertEquals(0, world.getNearbyBoids(boid3, 1).size());
     }
 
     @Test
     void testAddRandomBoids() {
         final int BOID_COUNT = 200;
 
-        for(int i = 0; i < BOID_COUNT; i++) {
+        for (int i = 0; i < BOID_COUNT; i++) {
             Boid boid = world.addRandomBoid();
             assertEquals(i + 1, world.boidCount());
-            assertTrue(world.getBoidList().contains(boid));
+            assertTrue(world.getBoids().contains(boid));
             assertTrue(boidInBounds(world, boid));
         }
 

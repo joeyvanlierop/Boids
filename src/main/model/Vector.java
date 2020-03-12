@@ -26,10 +26,17 @@ public class Vector implements Serializable {
 
     /**
      * REQUIRES: a and b must not be zero-vectors
-     * EFFECTS: returns the angle between two vectors
+     * EFFECTS: returns the angle between two vectors in radians
      */
-    public static double angle(Vector a, Vector b) {
+    public static double rot(Vector a, Vector b) {
         return Math.acos(dot(a, b) / (magnitude(a) * magnitude(b)));
+    }
+
+    /**
+     * EFFECTS: returns the rotation of the vector in radian
+     */
+    public double rot() {
+        return Math.atan2(getY(), getX());
     }
 
     /**
@@ -43,7 +50,14 @@ public class Vector implements Serializable {
      * EFFECTS: returns the length of a vector
      */
     public static double magnitude(Vector a) {
-        return Math.sqrt(dot(a, a));
+        return Math.sqrt(Vector.dot(a, a));
+    }
+
+    /**
+     * EFFECTS: returns the length of this vector
+     */
+    public double magnitude() {
+        return Math.sqrt(dot(this, this));
     }
 
     /**
@@ -57,9 +71,10 @@ public class Vector implements Serializable {
      * EFFECTS: adds a vector to this vector
      * MODIFIES: this
      */
-    public void add(Vector v) {
+    public Vector add(Vector v) {
         setX(getX() + v.getX());
         setY(getY() + v.getY());
+        return this;
     }
 
     /**
@@ -73,9 +88,10 @@ public class Vector implements Serializable {
      * EFFECTS: subtracts a vector from this vector
      * MODIFIES: this
      */
-    public void sub(Vector v) {
+    public Vector sub(Vector v) {
         setX(getX() - v.getX());
         setY(getY() - v.getY());
+        return this;
     }
 
     /**
@@ -89,9 +105,29 @@ public class Vector implements Serializable {
      * EFFECTS: multiplies this vector a vector by a scalar
      * MODIFIES: this
      */
-    public void mult(double scale) {
+    public Vector mult(double scale) {
         setX(getX() * scale);
         setY(getY() * scale);
+        return this;
+    }
+
+    /**
+     * REQUIRES: scale is not 0
+     * EFFECTS: returns the scalar division of a vector and a scalar
+     */
+    public static Vector div(Vector a, double scale) {
+        return new Vector(a.getX() / scale, a.getY() / scale);
+    }
+
+    /**
+     * REQUIRES: scale is not 0
+     * EFFECTS: divides this vector a vector by a scalar
+     * MODIFIES: this
+     */
+    public Vector div(double scale) {
+        setX(getX() / scale);
+        setY(getY() / scale);
+        return this;
     }
 
     /**
@@ -105,8 +141,39 @@ public class Vector implements Serializable {
      * EFFECTS: normalizes this vector
      * MODIFIES: this
      */
-    public void norm() {
-        mult(1 / Vector.magnitude(this));
+    public Vector norm() {
+        mult(1 / magnitude());
+        return this;
+    }
+
+    /**
+     * EFFECTS: clamps this vector to the given length
+     * MODIFIES: this
+     */
+    public Vector clamp(double maxLength) {
+        double length = magnitude();
+
+        if (length > maxLength) {
+            return norm().mult(maxLength);
+        }
+
+        return this;
+    }
+
+    /**
+     * EFFECTS: clamps this vector to the given length
+     * MODIFIES: this
+     */
+    public Vector clamp(double maxLength, double minLength) {
+        double length = magnitude();
+
+        if (length > maxLength) {
+            return norm().mult(maxLength);
+        } else if (length < minLength) {
+            return norm().mult(minLength);
+        }
+
+        return this;
     }
 
     public double getX() {

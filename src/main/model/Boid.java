@@ -8,45 +8,58 @@ import java.io.Serializable;
 //  - A acceleration vector
 //  - A mass
 public class Boid implements Serializable {
-    private Vector position;
-    private Vector velocity;
-    private Vector acceleration;
-    private double mass;
+    protected Vector position;
+    protected Vector velocity;
+    protected Vector acceleration;
+    protected double mass;
 
-    /**
-     * EFFECTS: constructs a boid with the given position
-     * the velocity and acceleration are set to (0, 0)
-     * the mass is set to 1
-     */
-    public Boid(Vector position) {
-        this(position, new Vector(0, 0));
+    protected double maxVelocity;
+
+    public static class BoidBuilder {
+        private Vector position = new Vector(0, 0);
+        private Vector velocity = new Vector(0, 0);
+        private Vector acceleration = new Vector(0, 0);
+        private double mass = 1;
+        private double maxVelocity = 5;
+        private double maxAcceleration = 0.005;
+
+        public BoidBuilder setPosition(Vector position) {
+            this.position = position;
+            return this;
+        }
+
+        public BoidBuilder setVelocity(Vector velocity) {
+            this.velocity = velocity;
+            return this;
+        }
+
+        public BoidBuilder setAcceleration(Vector acceleration) {
+            this.acceleration = acceleration;
+            return this;
+        }
+
+        public BoidBuilder setMass(double mass) {
+            this.mass = mass;
+            return this;
+        }
+
+        public BoidBuilder setMaxVelocity(double maxVelocity) {
+            this.maxVelocity = maxVelocity;
+            return this;
+        }
+
+        public Boid build() {
+            return new Boid(position, velocity, acceleration, mass, maxVelocity);
+        }
     }
 
-    /**
-     * EFFECTS: constructs a boid with the given position and velocity
-     * the acceleration is set to (0, 0)
-     * the mass is set to 1
-     */
-    public Boid(Vector position, Vector velocity) {
-        this(position, velocity, new Vector(0, 0));
-    }
-
-    /**
-     * EFFECTS: constructs a boid with the given position, velocity, and acceleration
-     * the mass is set to 1
-     */
-    public Boid(Vector position, Vector velocity, Vector acceleration) {
-        this(position, velocity, acceleration, 1);
-    }
-
-    /**
-     * EFFECTS: constructs a boid with the given position, velocity, acceleration, and mass
-     */
-    public Boid(Vector position, Vector velocity, Vector acceleration, double mass) {
+    private Boid(Vector position, Vector velocity, Vector acceleration,
+                double mass, double maxVelocity) {
         this.position = position;
         this.velocity = velocity;
         this.acceleration = acceleration;
         this.mass = mass;
+        this.maxVelocity = maxVelocity;
     }
 
     /**
@@ -56,7 +69,13 @@ public class Boid implements Serializable {
      */
     public void move() {
         velocity.add(acceleration);
+        velocity.clamp(maxVelocity, 0.5);
         position.add(velocity);
+        acceleration.mult(0);
+    }
+
+    public void addForce(Vector force) {
+        acceleration.add(force.div(getMass()));
     }
 
     public Vector getPosition() {
@@ -91,6 +110,14 @@ public class Boid implements Serializable {
         this.mass = mass;
     }
 
+    public double getMaxVelocity() {
+        return maxVelocity;
+    }
+
+    public void setMaxVelocity(double maxVelocity) {
+        this.maxVelocity = maxVelocity;
+    }
+
     @Override
     public String toString() {
         return String.format("Boid[position=%s, velocity=%s, acceleration=%s, mass=%.2f]",
@@ -114,6 +141,7 @@ public class Boid implements Serializable {
         return b.getPosition().equals(getPosition())
                 && b.getVelocity().equals(getVelocity())
                 && b.getAcceleration().equals(getAcceleration())
-                && b.getMass() == getMass();
+                && b.getMass() == getMass()
+                && b.getMaxVelocity() == getMaxVelocity();
     }
 }
