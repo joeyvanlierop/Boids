@@ -38,6 +38,14 @@ class WorldTest {
     }
 
     @Test
+    void testAddRandomBoids() {
+        final int BOID_COUNT = 200;
+
+        world.addRandomBoids(BOID_COUNT);
+        assertEquals(BOID_COUNT, world.boidCount());
+    }
+
+    @Test
     void testUpdate() {
         Boid boid = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).setVelocity(new Vector(10, 10)).build());
         boid.setMaxVelocity(100);
@@ -91,20 +99,6 @@ class WorldTest {
         assertEquals(2, world.getNearbyBoids(boid1, 5).size());
         assertEquals(1, world.getNearbyBoids(boid2, 3).size());
         assertEquals(0, world.getNearbyBoids(boid3, 1).size());
-    }
-
-    @Test
-    void testAddRandomBoids() {
-        final int BOID_COUNT = 200;
-
-        for (int i = 0; i < BOID_COUNT; i++) {
-            Boid boid = world.addRandomBoid();
-            assertEquals(i + 1, world.boidCount());
-            assertTrue(world.getBoids().contains(boid));
-            assertTrue(boidInBounds(world, boid));
-        }
-
-        assertEquals(BOID_COUNT, world.boidCount());
     }
 
     private boolean boidInBounds(World w, Boid b) {
