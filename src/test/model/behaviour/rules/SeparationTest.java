@@ -18,19 +18,28 @@ public class SeparationTest extends RuleTest {
     void runBefore() {
         rule = new Separation(true, 1, 10);
         world = new World.WorldBuilder().setWidth(100).setHeight(100).addRule(rule).build();
-        boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(2, 0)).setVelocity(new Vector(0, 0)).build());
-        boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(4, 0)).setVelocity(new Vector(0, 0)).build());
+        boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(2, 0)).setVelocity(new Vector(1, 0)).build());
+        boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(4, 0)).setVelocity(new Vector(-1, 0)).build());
         boid3 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(50, 50)).setVelocity(new Vector(0, 2)).build());
     }
 
     @Test
-    void testAlignment() {
-        assertEquals(new Vector(-2, 0), rule.update(boid1, world));
-        assertEquals(new Vector(2, 0), rule.update(boid2, world));
+    void testSeparation() {
+        assertEquals(new Vector(-3, 0).norm(), rule.update(boid1, world));
+        assertEquals(new Vector(3, 0).norm(), rule.update(boid2, world));
     }
 
     @Test
-    void testAlignmentNotInRange() {
+    void testSeparationNotInSight() {
+        world.setViewAngle(45);
+        boid2.setVelocity(new Vector(1, 0));
+
+        assertEquals(new Vector(-3, 0).norm(), rule.update(boid1, world));
+        assertEquals(new Vector(0, 0), rule.update(boid2, world));
+    }
+
+    @Test
+    void testSeparationNotInRange() {
         assertEquals(new Vector(0, 0), rule.update(boid3, world));
     }
 }

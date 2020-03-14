@@ -31,6 +31,7 @@ public class Alignment extends Rule {
 
         alignment.div(nearbyBoids.size());
         alignment.sub(boid.getVelocity());
+        alignment.norm();
         alignment.mult(weight);
         return alignment;
     }

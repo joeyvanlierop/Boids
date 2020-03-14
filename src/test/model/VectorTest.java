@@ -63,18 +63,21 @@ class VectorTest {
     }
 
     @Test
-    void testAngle() {
-        assertEquals(0, Vector.rot(iVector, iVector));
-        assertEquals(Math.PI / 2, Vector.rot(iVector, jVector));
+    void testAngleBetween() {
+        assertEquals(0, Vector.angleBetween(iVector, iVector));
+        assertEquals(90, Vector.angleBetween(iVector, jVector), 0.01);
+        assertEquals(90, Vector.angleBetween(jVector, iVector), 0.01);
+        assertEquals(180, Vector.angleBetween(oneVector, Vector.mult(oneVector, -1)), 0.01);
+        assertEquals(135, Vector.angleBetween(oneVector, Vector.mult(iVector, -1)), 0.01);
     }
 
     @Test
-    void testRot() {
+    void testAngle() {
         Vector testVector1 = new Vector(1, 0);
         Vector testVector2 = new Vector(0, 1);
 
-        assertEquals(0, testVector1.rot());
-        assertEquals(Math.PI / 2, testVector2.rot());
+        assertEquals(0, testVector1.angle());
+        assertEquals(Math.PI / 2, testVector2.angle());
     }
 
     @Test

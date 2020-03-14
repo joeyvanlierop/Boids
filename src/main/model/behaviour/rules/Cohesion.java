@@ -19,18 +19,21 @@ public class Cohesion extends Rule {
     @Override
     public Vector update(Boid boid, World world) {
         ArrayList<Boid> nearbyBoids = world.getNearbyBoids(boid, radius);
+        Vector averagePosition = new Vector(0, 0);
         Vector cohesion = new Vector(0, 0);
 
         if (nearbyBoids.size() == 0) {
-            return cohesion;
+            return averagePosition;
         }
 
         for (Boid nearbyBoid : nearbyBoids) {
-            cohesion.add(nearbyBoid.getPosition());
+            averagePosition.add(nearbyBoid.getPosition());
         }
 
-        cohesion.div(nearbyBoids.size());
-        cohesion.sub(boid.getPosition());
+        averagePosition.div(nearbyBoids.size());
+        averagePosition.sub(boid.getPosition());
+        cohesion = Vector.sub(averagePosition, boid.getVelocity());
+        cohesion.norm();
         cohesion.mult(weight);
         return cohesion;
     }

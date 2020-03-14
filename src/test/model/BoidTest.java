@@ -16,6 +16,7 @@ class BoidTest {
                 .setVelocity(new Vector(0, 0))
                 .setAcceleration(new Vector(0, 0))
                 .setMass(1)
+                .setMaxVelocity(0)
                 .setMaxVelocity(1)
                 .build();
     }
@@ -26,6 +27,7 @@ class BoidTest {
         assertEquals(new Vector(0, 0), boid.getVelocity());
         assertEquals(new Vector(0, 0), boid.getAcceleration());
         assertEquals(1, boid.getMass());
+        assertEquals(1, boid.getMinVelocity());
         assertEquals(1, boid.getMaxVelocity());
     }
 
@@ -39,6 +41,7 @@ class BoidTest {
                 .setVelocity(new Vector(1, 1))
                 .setAcceleration(new Vector(1, 1))
                 .setMass(2)
+                .setMinVelocity(1)
                 .setMaxVelocity(2)
                 .build();
         assertNotEquals(boid, other);
@@ -53,6 +56,9 @@ class BoidTest {
         assertNotEquals(boid, other);
 
         other.setMass(1);
+        assertNotEquals(boid, other);
+
+        other.setMinVelocity(0);
         assertNotEquals(boid, other);
 
         other.setMaxVelocity(1);

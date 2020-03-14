@@ -15,12 +15,14 @@ import java.util.Random;
 public class World implements Serializable {
     private int width;
     private int height;
+    private double viewAngle;
     private Behaviour behaviour;
     private ArrayList<Boid> boids;
 
     public static class WorldBuilder {
         private int width;
         private int height;
+        private double viewAngle = 360;
         private Behaviour behaviour = new Behaviour();
 
         public WorldBuilder setWidth(int width) {
@@ -33,19 +35,25 @@ public class World implements Serializable {
             return this;
         }
 
+        public WorldBuilder setViewAngle(double viewAngle) {
+            this.viewAngle = viewAngle;
+            return this;
+        }
+
         public WorldBuilder addRule(Rule rule) {
             behaviour.addRule(rule);
             return this;
         }
 
         public World build() {
-            return new World(width, height, behaviour);
+            return new World(width, height, viewAngle, behaviour);
         }
     }
 
-    private World(int width, int height, Behaviour behaviour) {
+    private World(int width, int height, double viewAngle, Behaviour behaviour) {
         this.width = width;
         this.height = height;
+        this.viewAngle = viewAngle;
         this.behaviour = behaviour;
         this.boids = new ArrayList<>();
     }
@@ -93,7 +101,7 @@ public class World implements Serializable {
     }
 
     /**
-     * EFFECTS: adds a boid to the world with a random position within the bounds
+     * EFFECTS: adds a boid to the world with a random position and velocity within the bounds
      * - returns the added boid
      * MODIFIES: this
      */
@@ -101,15 +109,26 @@ public class World implements Serializable {
         Random random = new Random();
         double positionX = random.nextDouble() * width;
         double positionY = random.nextDouble() * height;
+
+        Vector position = new Vector(positionX, positionY);
+
+        return addRandomBoid(position);
+    }
+
+    /**
+     * EFFECTS: adds a boid to the world with a random position within the bounds
+     * - returns the added boid
+     * MODIFIES: this
+     */
+    public Boid addRandomBoid(Vector position) {
+        Random random = new Random();
         double velocityX = random.nextDouble() * 2 - 1;
         double velocityY = random.nextDouble() * 2 - 1;
 
-        Vector position = new Vector(positionX, positionY);
         Vector velocity = new Vector(velocityX, velocityY);
         Boid boid = new Boid.BoidBuilder().setPosition(position).setVelocity(velocity).build();
 
-        boids.add(boid);
-        return boid;
+        return addBoid(boid);
     }
 
     /**
@@ -130,8 +149,12 @@ public class World implements Serializable {
 
         for (Boid other : boids) {
             if (other != boid) {
-                if (Vector.distance(boid.getPosition(), other.getPosition()) <= radius) {
-                    nearbyBoids.add(other);
+                Vector difference = Vector.sub(other.getPosition(), boid.getPosition());
+                double distance = difference.magnitude();
+                if (distance <= radius) {
+                    if (distance == 0 || Vector.angleBetween(boid.getVelocity(), difference) <= getViewAngle()) {
+                        nearbyBoids.add(other);
+                    }
                 }
             }
         }
@@ -168,5 +191,13 @@ public class World implements Serializable {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public double getViewAngle() {
+        return viewAngle;
+    }
+
+    public void setViewAngle(double viewAngle) {
+        this.viewAngle = viewAngle;
     }
 }

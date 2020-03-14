@@ -10,13 +10,14 @@ class WorldTest {
 
     @BeforeEach
     void runBefore() {
-        world = new World.WorldBuilder().setWidth(10).setHeight(10).build();
+        world = new World.WorldBuilder().setWidth(10).setHeight(10).setViewAngle(360).build();
     }
 
     @Test
     void testConstructor() {
         assertEquals(10, world.getWidth());
         assertEquals(10, world.getHeight());
+        assertEquals(360, world.getViewAngle());
         assertNotNull(world.getBehaviour());
     }
 
@@ -33,6 +34,17 @@ class WorldTest {
         Boid boid = world.addRandomBoid();
 
         assertEquals(1, world.boidCount());
+        assertTrue(world.getBoids().contains(boid));
+        assertTrue(boidInBounds(world, boid));
+    }
+
+    @Test
+    void testAddRandomBoidAtPosition() {
+        Vector position = new Vector(0, 0);
+        Boid boid = world.addRandomBoid(position);
+
+        assertEquals(1, world.boidCount());
+        assertEquals(position, boid.getPosition());
         assertTrue(world.getBoids().contains(boid));
         assertTrue(boidInBounds(world, boid));
     }
@@ -92,13 +104,22 @@ class WorldTest {
 
     @Test
     void testGetNearbyBoids() {
-        Boid boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).build());
-        Boid boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(1, 1)).build());
-        Boid boid3 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(5, 0)).build());
+        Boid boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).setVelocity(new Vector(1, 0)).build());
+        Boid boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(1, 1)).setVelocity(new Vector(-1, -2)).build());
+        Boid boid3 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(5, 0)).setVelocity(new Vector(-1, 0)).build());
+        Boid boid4 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(5, 0)).setVelocity(new Vector(-1, 0)).build());
+
+        assertEquals(3, world.getNearbyBoids(boid1, 5).size());
+        assertEquals(1, world.getNearbyBoids(boid2, 3).size());
+        assertEquals(1, world.getNearbyBoids(boid3, 1).size());
+        assertEquals(1, world.getNearbyBoids(boid4, 1).size());
+
+        world.setViewAngle(35);
 
         assertEquals(2, world.getNearbyBoids(boid1, 5).size());
         assertEquals(1, world.getNearbyBoids(boid2, 3).size());
-        assertEquals(0, world.getNearbyBoids(boid3, 1).size());
+        assertEquals(1, world.getNearbyBoids(boid3, 1).size());
+        assertEquals(1, world.getNearbyBoids(boid4, 1).size());
     }
 
     private boolean boidInBounds(World w, Boid b) {

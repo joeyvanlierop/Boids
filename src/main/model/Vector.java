@@ -28,14 +28,14 @@ public class Vector implements Serializable {
      * REQUIRES: a and b must not be zero-vectors
      * EFFECTS: returns the angle between two vectors in radians
      */
-    public static double rot(Vector a, Vector b) {
-        return Math.acos(dot(a, b) / (magnitude(a) * magnitude(b)));
+    public static double angleBetween(Vector a, Vector b) {
+        return Math.toDegrees(Math.acos(dot(a, b) / (magnitude(a) * magnitude(b))));
     }
 
     /**
      * EFFECTS: returns the rotation of the vector in radian
      */
-    public double rot() {
+    public double angle() {
         return Math.atan2(getY(), getX());
     }
 

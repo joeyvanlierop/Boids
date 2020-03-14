@@ -31,6 +31,7 @@ public class Separation extends Rule {
 
         separation.div(nearbyBoids.size());
         separation.sub(boid.getVelocity());
+        separation.norm();
         separation.mult(weight);
         return separation;
     }

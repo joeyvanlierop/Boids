@@ -21,7 +21,7 @@ public class BehaviourTest {
         behaviour = new Behaviour();
         world = new World.WorldBuilder().setWidth(100).setHeight(100).build();
         boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(1, 0)).setVelocity(new Vector(1, 0)).build());
-        boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(2, 0)).setVelocity(new Vector(1, 0)).build());
+        boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 1)).setVelocity(new Vector(1, 0)).build());
     }
 
     @Test
@@ -37,7 +37,7 @@ public class BehaviourTest {
         behaviour.update(boid1, world);
         behaviour.update(boid2, world);
         assertNotEquals(new Vector(2, 0), boid1.getPosition());
-        assertNotEquals(new Vector(3, 0), boid2.getPosition());
+        assertNotEquals(new Vector(1, 1), boid2.getPosition());
     }
 
     @Test
@@ -46,7 +46,7 @@ public class BehaviourTest {
         behaviour.update(boid1, world);
         behaviour.update(boid2, world);
         assertEquals(new Vector(2, 0), boid1.getPosition());
-        assertEquals(new Vector(3, 0), boid2.getPosition());
+        assertEquals(new Vector(1, 1), boid2.getPosition());
     }
 }
 

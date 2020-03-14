@@ -18,15 +18,23 @@ public class CohesionTest extends RuleTest {
     void runBefore() {
         rule = new Cohesion(true, 1, 10);
         world = new World.WorldBuilder().setWidth(100).setHeight(100).addRule(rule).build();
-        boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(2, 0)).setVelocity(new Vector(0, 0)).build());
-        boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 2)).setVelocity(new Vector(0, 0)).build());
+        boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(2, 0)).setVelocity(new Vector(0, 1)).build());
+        boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 2)).setVelocity(new Vector(0, 1)).build());
         boid3 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(50, 50)).setVelocity(new Vector(0, 2)).build());
     }
 
     @Test
     void testCohesion() {
-        assertEquals(new Vector(-2, 2), rule.update(boid1, world));
-        assertEquals(new Vector(2, -2), rule.update(boid2, world));
+        assertEquals(new Vector(-2, 1).norm(), rule.update(boid1, world));
+        assertEquals(new Vector(2, -3).norm(), rule.update(boid2, world));
+    }
+
+    @Test
+    void testCohesionNotInSight() {
+        world.setViewAngle(90);
+
+        assertEquals(new Vector(-2, 1).norm(), rule.update(boid1, world));
+        assertEquals(new Vector(0, 0), rule.update(boid2, world));
     }
 
     @Test

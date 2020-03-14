@@ -16,13 +16,14 @@ public class NoiseTest extends RuleTest {
     void runBefore() {
         rule = new Noise(true, 1);
         world = new World.WorldBuilder().setWidth(100).setHeight(100).addRule(rule).build();
-        boid = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).setVelocity(new Vector(0, 0)).build());
+        boid = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).setVelocity(new Vector(1, 1)).build());
     }
 
     @Test
-    void testAlignment() {
+    void testNoise() {
+        double velocityMag = boid.getVelocity().magnitude();
         Vector random = rule.update(boid, world);
-        assertTrue(random.getX() >= -1 && random.getX() <= 1);
-        assertTrue(random.getY() >= -1 && random.getY() <= 1);
+        assertTrue(random.magnitude() <= 2 * velocityMag);
+        assertTrue(random.magnitude() >= 2 * -velocityMag);
     }
 }

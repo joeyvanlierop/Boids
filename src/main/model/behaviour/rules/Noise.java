@@ -22,6 +22,9 @@ public class Noise extends Rule {
 
         Vector noise = new Vector(boid.getVelocity().getY() * scale, boid.getVelocity().getX() * -scale);
 
+        noise.norm();
+        noise.mult(boid.getVelocity().magnitude());
+        noise.sub(boid.getVelocity());
         noise.mult(weight);
 
         return noise;

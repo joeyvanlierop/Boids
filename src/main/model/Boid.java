@@ -8,20 +8,20 @@ import java.io.Serializable;
 //  - A acceleration vector
 //  - A mass
 public class Boid implements Serializable {
-    protected Vector position;
-    protected Vector velocity;
-    protected Vector acceleration;
-    protected double mass;
-
-    protected double maxVelocity;
+    private Vector position;
+    private Vector velocity;
+    private Vector acceleration;
+    private double mass;
+    private double minVelocity;
+    private double maxVelocity;
 
     public static class BoidBuilder {
         private Vector position = new Vector(0, 0);
         private Vector velocity = new Vector(0, 0);
         private Vector acceleration = new Vector(0, 0);
         private double mass = 1;
+        private double minVelocity = 1;
         private double maxVelocity = 5;
-        private double maxAcceleration = 0.005;
 
         public BoidBuilder setPosition(Vector position) {
             this.position = position;
@@ -43,22 +43,28 @@ public class Boid implements Serializable {
             return this;
         }
 
+        public BoidBuilder setMinVelocity(double minVelocity) {
+            this.minVelocity = minVelocity;
+            return this;
+        }
+
         public BoidBuilder setMaxVelocity(double maxVelocity) {
             this.maxVelocity = maxVelocity;
             return this;
         }
 
         public Boid build() {
-            return new Boid(position, velocity, acceleration, mass, maxVelocity);
+            return new Boid(position, velocity, acceleration, mass, minVelocity, maxVelocity);
         }
     }
 
     private Boid(Vector position, Vector velocity, Vector acceleration,
-                double mass, double maxVelocity) {
+                double mass, double minVelocity, double maxVelocity) {
         this.position = position;
         this.velocity = velocity;
         this.acceleration = acceleration;
         this.mass = mass;
+        this.minVelocity = minVelocity;
         this.maxVelocity = maxVelocity;
     }
 
@@ -69,7 +75,7 @@ public class Boid implements Serializable {
      */
     public void move() {
         velocity.add(acceleration);
-        velocity.clamp(maxVelocity, 0.5);
+        velocity.clamp(maxVelocity, minVelocity);
         position.add(velocity);
         acceleration.mult(0);
     }
@@ -108,6 +114,14 @@ public class Boid implements Serializable {
 
     public void setMass(double mass) {
         this.mass = mass;
+    }
+
+    public double getMinVelocity() {
+        return minVelocity;
+    }
+
+    public void setMinVelocity(double minVelocity) {
+        this.minVelocity = minVelocity;
     }
 
     public double getMaxVelocity() {

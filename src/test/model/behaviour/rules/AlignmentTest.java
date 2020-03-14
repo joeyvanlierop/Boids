@@ -19,14 +19,22 @@ public class AlignmentTest extends RuleTest {
         rule = new Alignment(true, 1, 10);
         world = new World.WorldBuilder().setWidth(100).setHeight(100).addRule(rule).build();
         boid1 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).setVelocity(new Vector(2, 0)).build());
-        boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(0, 0)).setVelocity(new Vector(0, 2)).build());
+        boid2 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(1, 0)).setVelocity(new Vector(0, 2)).build());
         boid3 = world.addBoid(new Boid.BoidBuilder().setPosition(new Vector(50, 50)).setVelocity(new Vector(0, 2)).build());
     }
 
     @Test
     void testAlignment() {
-        assertEquals(new Vector(-2, 2), rule.update(boid1, world));
-        assertEquals(new Vector(2, -2), rule.update(boid2, world));
+        assertEquals(new Vector(-2, 2).norm(), rule.update(boid1, world));
+        assertEquals(new Vector(2, -2).norm(), rule.update(boid2, world));
+    }
+
+    @Test
+    void testAlignmentNotInSight() {
+        world.setViewAngle(45);
+
+        assertEquals(new Vector(-2, 2).norm(), rule.update(boid1, world));
+        assertEquals(new Vector(0, 0), rule.update(boid2, world));
     }
 
     @Test
