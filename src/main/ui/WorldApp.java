@@ -24,10 +24,21 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class WorldApp extends Application {
-    private static final String WORLD_FILE = "./data/autosave.world";
+    // Default world settings
     private static final int DEFAULT_WIDTH = 500;
+    private static final String WORLD_FILE = "./data/autosave.world";
     private static final int DEFAULT_HEIGHT = 500;
-    private static final int DEFAULT_VIEW_ANGLE = 120;
+
+    // Boid Simulation Settings
+    private static final int VIEW_ANGLE = 120;
+    private static final double NOISE_WEIGHT = 0.07;
+    private static final double SEPARATION_WEIGHT = 0.05;
+    private static final double SEPARATION_RADIUS = 10;
+    private static final double ALIGNMENT_WEIGHT = 0.02;
+    private static final double ALIGNMENT_RADIUS = 20;
+    private static final double COHESION_WEIGHT = 0.02;
+    private static final double COHESION_RADIUS = 20;
+
     private World world;
     private Double[] boidPoints;
 
@@ -105,11 +116,11 @@ public class WorldApp extends Application {
         world = new World.WorldBuilder()
                 .setWidth(DEFAULT_WIDTH)
                 .setHeight(DEFAULT_HEIGHT)
-                .setViewAngle(DEFAULT_VIEW_ANGLE)
-                .addRule(new Noise(true, 0.07))
-                .addRule(new Separation(true, 0.05, 10))
-                .addRule(new Alignment(true, 0.02, 20))
-                .addRule(new Cohesion(true, 0.02, 20))
+                .setViewAngle(VIEW_ANGLE)
+                .addRule(new Noise(true, NOISE_WEIGHT))
+                .addRule(new Separation(true, SEPARATION_WEIGHT, SEPARATION_RADIUS))
+                .addRule(new Alignment(true, ALIGNMENT_WEIGHT, ALIGNMENT_RADIUS))
+                .addRule(new Cohesion(true, COHESION_WEIGHT, COHESION_RADIUS))
                 .build();
         world.addRandomBoids(boidCount);
     }
