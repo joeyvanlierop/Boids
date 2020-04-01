@@ -19,7 +19,6 @@ public class Noise extends Rule {
     @Override
     public Vector update(Boid boid, World world) {
         double scale = random.nextDouble() * 2 - 1;
-
         Vector noise = new Vector(boid.getVelocity().getY() * scale, boid.getVelocity().getX() * -scale);
 
         noise.norm();

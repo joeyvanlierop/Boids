@@ -10,6 +10,7 @@ import java.util.Random;
 // Represents a world having:
 //  - A width
 //  - A height
+//  - A standard view angle for all boids
 //  - A list of boids
 //  - A list of behaviours
 public class World implements Serializable {
