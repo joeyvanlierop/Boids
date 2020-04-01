@@ -45,7 +45,7 @@ This project demonstrates a type hierarchy. In order to construct the behaviour 
     In order to keep high cohesion within the `Boid` class, I extracted the rendering logic from `Boid`  and placed it inside `WorldApp`. This allowed the `Boid` class to not have to maintain multiple responsibilities, and this also allowed for better unit testing.
 
 ## UML Class Diagram
-<p align=center>![Preview](./img/UML_Design_Diagram.png)</p>
+<p align="center"><img src="img/UML_Design_Diagram.png"/></p>
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
