@@ -3,6 +3,7 @@
 <p align="center"><img src="img/preview.png"/></p>
 
 ## About The Project
+*This is a personal project that I developed as part of my [CPSC 210](https://sites.google.com/site/ubccpsc210/) course. Keep in mind that some of the following README sections were specifically written for grading purposes.* 
 
 Developed by Craig Reynolds in 1986, boids are a form of artificial life that mimic the flocking behaviour of birds. Boids are able to form beautiful, mesmerizing patterns by following these three rules: 
 - Separation: Steer to avoid crowding local flockmates
